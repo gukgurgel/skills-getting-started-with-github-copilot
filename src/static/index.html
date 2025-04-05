@@ -46,5 +46,40 @@
     </footer>
 
     <script src="app.js"></script>
+    <script>
+      // Fetch activities and populate the activity cards
+      fetch("/activities")
+        .then((response) => response.json())
+        .then((activities) => {
+          const activitiesList = document.getElementById("activities-list");
+          activitiesList.innerHTML = ""; // Clear loading message
+
+          for (const [name, details] of Object.entries(activities)) {
+            const card = document.createElement("div");
+            card.className = "activity-card";
+
+            // Create the participants list dynamically
+            const participantsList = details.participants
+              .map((participant) => `<li>${participant}</li>`)
+              .join("");
+
+            card.innerHTML = `
+              <h4>${name}</h4>
+              <p>${details.description}</p>
+              <p><strong>Schedule:</strong> ${details.schedule}</p>
+              <p><strong>Max Participants:</strong> ${details.max_participants}</p>
+              <div class="participants">
+                <h5>Participants:</h5>
+                <ul>${participantsList}</ul>
+              </div>
+            `;
+
+            activitiesList.appendChild(card);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching activities:", error);
+        });
+    </script>
   </body>
 </html>
